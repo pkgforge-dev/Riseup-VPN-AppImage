@@ -1,4 +1,4 @@
-#!/bin/false
+#!/bin/sh
 
 # the application expects bitmask-root in /usr/local/sbin
 # it also needs a polkit file in /usr
@@ -6,16 +6,16 @@
 # we need to call pkexec since it requires privileges
 
 _install_to_usr_local() (
-	bitmask_src="$APPDIR"/bin/bitmask-root
+	bitmask_src=$APPDIR/bin/bitmask-root
 	bitmask_dst=/usr/local/sbin/bitmask-root
 
-	rule_src="$APPDIR"/share/polkit-1/actions/se.leap.bitmask.policy
+	rule_src=$APPDIR/share/polkit-1/actions/se.leap.bitmask.policy
 	rule_dst=/usr/local/share/polkit-1/actions/se.leap.bitmask.policy
 
 	# for some reason we get permission denied error if we try to copy
 	# directly to the destination, so instead we have to fisrt copy to
 	# XDG_CACHE_HOME and then to the destination lol
-	tmpdir="${XDG_CACHE_HOME:-$HOME/.cache}"/riseup-vpn-appimage
+	tmpdir=${XDG_CACHE_HOME:-$HOME/.cache}/riseup-vpn-appimage
 
 	if [ ! -f "$bitmask_dst" ] || [ ! -f "$rule_dst" ]; then
 		# remove anything funny that could be there
@@ -24,11 +24,13 @@ _install_to_usr_local() (
 		cp -v "$bitmask_src" "$tmpdir"
 		cp -v "$rule_src"    "$tmpdir"
 
-		pkexec /bin/sh -c "
-		  mkdir -p /usr/local/sbin /usr/local/share/polkit-1/actions
-		  cp -v \"$tmpdir\"/bitmask-root           \"$bitmask_dst\"
-		  cp -v \"$tmpdir\"/se.leap.bitmask.policy \"$rule_dst\"
-		"
+		if notify -dq "We need permission to create '$bitmask_dst' and '$rule_dst'"; then
+			run_gui_sudo /bin/sh -c "
+			  mkdir -p /usr/local/sbin /usr/local/share/polkit-1/actions
+			  cp -v \"$tmpdir\"/bitmask-root           \"$bitmask_dst\"
+			  cp -v \"$tmpdir\"/se.leap.bitmask.policy \"$rule_dst\"
+			"
+		fi
 	fi
 )
 
