@@ -10,12 +10,12 @@ export ADD_HOOKS="self-updater.bg.hook"
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
 export ICON=/usr/share/icons/hicolor/128x128/apps/riseup-vpn.png
 export DESKTOP=/usr/share/applications/riseup-vpn.desktop
-export DEPLOY_PYTHON=1
 
 # Deploy dependencies
 quick-sharun \
 	/usr/bin/riseup-vpn \
-	/usr/bin/bitmask-root
+	/usr/bin/bitmask-root \
+	/usr/bin/bash
 
 dst=./AppDir/share/polkit-1/actions
 mkdir -p "$dst"

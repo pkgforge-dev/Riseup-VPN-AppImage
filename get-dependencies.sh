@@ -15,6 +15,9 @@ get-debloated-pkgs --add-common --prefer-nano
 # Comment this out if you need an AUR package
 make-aur-package riseup-vpn
 
+cp -v ./bitmask-root.sh /usr/bin/bitmask-root
+chmod +x /usr/bin/bitmask-root
+
 # If the application needs to be manually built that has to be done down here
 
 # if you also have to make nightly releases check for DEVEL_RELEASE = 1
