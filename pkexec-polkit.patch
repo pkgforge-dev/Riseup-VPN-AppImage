@@ -1,0 +1,20 @@
+diff --git a/pkg/launcher/launcher_linux.go b/pkg/launcher/launcher_linux.go
+index 04e92b46..d3e6a4bd 100644
+--- a/pkg/launcher/launcher_linux.go
++++ b/pkg/launcher/launcher_linux.go
+@@ -62,6 +62,15 @@ func (l *Launcher) Check() (bool, bool, error) {
+ 		return false, true, nil
+ 	}
+ 
++	// The actual privilege escalation happens through pkexec in runBitmaskRoot,
++	// which talks to polkitd via whatever authentication agent has registered
++	// on the session bus. If pkexec is reachable on PATH we can elevate
++	// regardless of whether a specific desktop auth-agent binary is bundled.
++	if _, err := exec.LookPath("pkexec"); err == nil {
++		log.Debug().Msg("pkexec found on PATH, considering polkit usable")
++		return true, true, nil
++	}
++
+ 	isRunning, err := isPolkitRunning()
+ 	if err != nil {
+ 		log.Warn().
