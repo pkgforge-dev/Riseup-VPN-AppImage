@@ -35,6 +35,10 @@ git clone https://0xacab.org/leap/bitmask-vpn.git ./bitmask-vpn && (
 	# use pkexec from PATH instead of hardcoded polkit agent paths
 	git apply ../pkexec-polkit.patch
 
+	# follow the XDG Base Directory spec for the config dirs
+	# honor XDG_CONFING_HOME instead of hardcoding ~/.config
+	git apply ../xdg-config-dirs.patch
+
 	PROVIDER=riseup make vendor
 	PROVIDER=riseup LRELEASE=/usr/lib/qt6/bin/lrelease RELEASE=yes make build
 

@@ -1,0 +1,50 @@
+diff --git a/pkg/config/unix.go b/pkg/config/unix.go
+index 2489c41..8ecb9f3 100644
+--- a/pkg/config/unix.go
++++ b/pkg/config/unix.go
+@@ -23,5 +23,13 @@ import (
+ 	"path"
+ )
+ 
++func configHome() string {
++	dir, err := os.UserConfigDir()
++	if err != nil {
++		return path.Join(os.Getenv("HOME"), ".config")
++	}
++	return dir
++}
++
+ // Path for the config files
+-var Path = path.Join(os.Getenv("HOME"), ".config", "leap")
++var Path = path.Join(configHome(), "leap")
+diff --git a/vendor/0xacab.org/leap/bitmask-core/pkg/storage/storage.go b/vendor/0xacab.org/leap/bitmask-core/pkg/storage/storage.go
+index 99968f3..8e14744 100644
+--- a/vendor/0xacab.org/leap/bitmask-core/pkg/storage/storage.go
++++ b/vendor/0xacab.org/leap/bitmask-core/pkg/storage/storage.go
+@@ -23,8 +23,6 @@ import (
+ 	"path/filepath"
+ 	"time"
+ 
+-	homedir "github.com/mitchellh/go-homedir"
+-
+ 	"0xacab.org/leap/bitmask-core/pkg/bridge"
+ 	"0xacab.org/leap/bitmask-core/pkg/introducer"
+ )
+@@ -106,7 +104,7 @@ func NewStorageWithStore(store Store) *Storage {
+ // and looks up the correct default paths for Linux, MacOS and Windows.
+ // Don't call this method in context of mobile app development
+ func NewStorageWithDefaultDir() (*Storage, error) {
+-	home, err := homedir.Dir()
++	configHome, err := os.UserConfigDir()
+ 	if err != nil {
+ 		return nil, err
+ 	}
+@@ -117,7 +115,7 @@ func NewStorageWithDefaultDir() (*Storage, error) {
+ 		configPath = filepath.Join(os.Getenv("APPDATA"), AppName)
+ 	default:
+ 		// This will cover both 'darwin' (macOS) and 'linux'
+-		configPath = filepath.Join(home, ".config", AppName)
++		configPath = filepath.Join(configHome, AppName)
+ 	}
+ 
+ 	err = os.MkdirAll(configPath, 0700)
