@@ -3,7 +3,7 @@
 # Riseup-VPN-AppImage 🐧
 
 [![GitHub Downloads](https://img.shields.io/github/downloads/pkgforge-dev/Riseup-VPN-AppImage/total?logo=github&label=GitHub%20Downloads)](https://github.com/pkgforge-dev/Riseup-VPN-AppImage/releases/latest)
-[![CI Build Status](https://github.com//pkgforge-dev/Riseup-VPN-AppImage/actions/workflows/appimage.yml/badge.svg)](https://github.com/pkgforge-dev/Riseup-VPN-AppImage/releases/latest)
+[![CI Build Status](https://github.com/pkgforge-dev/Riseup-VPN-AppImage/actions/workflows/appimage.yml/badge.svg)](https://github.com/pkgforge-dev/Riseup-VPN-AppImage/releases/latest)
 [![Latest Stable Release](https://img.shields.io/github/v/release/pkgforge-dev/Riseup-VPN-AppImage)](https://github.com/pkgforge-dev/Riseup-VPN-AppImage/releases/latest)
 
 <p align="center">
