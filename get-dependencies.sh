@@ -39,6 +39,19 @@ git clone https://0xacab.org/leap/bitmask-vpn.git ./bitmask-vpn && (
 	# honor XDG_CONFING_HOME instead of hardcoding ~/.config
 	git apply ../xdg-config-dirs.patch
 
+	# The CA cert vendored in bitmask-vpn expires whenever Riseup rotates its
+	# LEAP Root CA, which breaks all connections with
+	# "VERIFY ERROR: certificate has expired".
+	# Refresh it from the URL the provider announces before generating the
+	# provider data, which embeds this file into providers.json.
+	CA_URL=$(awk -F' *= *' '/^\[riseup\]/{s=1} s && $1=="caURL"{print $2; exit}' ./providers/vendor.conf)
+	echo "Refreshing Riseup CA from $CA_URL..."
+	wget -q --tries=3 -O ./providers/riseup/riseup-ca.crt "$CA_URL"
+	if ! openssl x509 -in ./providers/riseup/riseup-ca.crt -noout -checkend 0; then
+		>&2 echo "ERROR: $CA_URL returned an expired certificate"
+		exit 1
+	fi
+
 	PROVIDER=riseup make vendor
 	PROVIDER=riseup LRELEASE=/usr/lib/qt6/bin/lrelease RELEASE=yes make build
 
